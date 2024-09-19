@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--
+	NOTES:
+	1. All tokens are represented by '$' sign in the template.
+	2. You can write your code only wherever mentioned.
+	3. All occurrences of existing tokens will be replaced by their appropriate values.
+	4. Blank lines will be removed automatically.
+	5. Remove unnecessary comments before creating your template.
+-->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="authoring-tool" content="Adobe_Animate_CC">
+<title>index</title>
+<!-- write your code here -->
+<style>
+  #animation_container, #_preload_div_ {
+	position:absolute;
+	margin:auto;
+	left:0;right:0;
+	top:0;bottom:0;
+  }
+</style>
+<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+<script src="index.js?1726733287230"></script>
+<script>
+// Global Scripts
+	var textElements = []
+var changeSound = true
+var currentSound = ""
+var soundsArray = []
+var soundOn = true;
+var enLang = true;
+createjs.Sound.alternateExtensions = ["mp3"];
+createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.HTMLAudioPlugin]);
+if (createjs.Sound.activePlugin.context.state === 'suspended') {
+        createjs.Sound.activePlugin.context.resume();
+    }
+	// navigation functions, move forward and backward on timeline
+	function moveF() {
+		PlaySfx("Click_buttons")
+		setTimeout(() => {
+			this.gotoAndStop(this.currentFrame + 1)
+		}, 100)
+	}
+	function moveB() {
+		PlaySfx("Click_buttons")
+		setTimeout(() => {
+			this.gotoAndStop(this.currentFrame - 1)
+		}, 200)
+	}
+	// show text in speach bubles according to enLang settings and populate the array for sounds
+	function showText(elements = []) {
+		for (let i = 0; i < elements.length; i++) {
+			var e = elements[i].name.split("_")[1]
+			if (e === "ar") {
+				elements[i].visible = !enLang
+			} else {
+				elements[i].visible = enLang
+			}
+		}
+		// change textElemetsArray
+		textElements.length = 0
+		for (let i = 0; i < elements.length; i++) {
+			textElements.push(elements[i])
+		}
+	}
+	// change the visibliliy tof text elements according to enLang settings
+	function translateText(elements = []) {
+		enLang = !enLang;
+		for (let i = 0; i < elements.length; i++) {
+			elements[i].visible = !elements[i].visible
+		}
+	}
+	//Play soound
+	function PlaySounds(timeline = null) {
+		var lan = "";
+		if (enLang) {
+			lan = "en"
+		} else {
+			lan = "ar"
+		}
+		createjs.Sound.stop();
+		if (changeSound) {
+			createjs.Sound.play(currentSound + "_" + lan).on("complete", function () {
+				if (timeline) {
+					dimmed = false;
+					timeline.gotoAndStop(timeline.currentFrame + 1)
+					console.log("sound finished ", dimmed)
+				}
+			})
+		}
+	}
+	function PlaySfx(id) {
+		createjs.Sound.stop();
+		createjs.Sound.play(id)
+	}
+	// change icon from ar to en and vice versa
+	function ChangeLangIcon() {
+		if (enLang) {
+			this.translate_btn.gotoAndStop(0)
+		} else {
+			this.translate_btn.gotoAndStop(1)
+		}
+	}
+	// sound register loops
+for (var i = 1; i <= 40; i++) {
+	let num = i < 10 ? "0" : ""
+	let lang = "en"
+	soundsArray.push({id: `${num}${i}_${lang}`,src: `sounds/${lang}/${num}${i}.mp3`})
+}
+for (var i = 1; i <= 40; i++) {
+	let num = i < 10 ? "0" : ""
+	let lang = "ar"
+	soundsArray.push({id: `${num}${i}_${lang}`,src: `sounds/${lang}/${num}${i}.mp3`})
+	}
+// sounds effects registr
+			soundsArray.push({
+				id: "Click_buttons",
+				src: "Sfx/Click_buttons.mp3"
+			})
+			soundsArray.push({
+				id: "Finishing_task",
+				src: "Sfx/Finishing_task.mp3"
+			})
+			soundsArray.push({
+				id: "Oops",
+				src: "Sfx/Oops.mp3"
+			})
+			soundsArray.push({
+				id: "Write_answer",
+				src: "Sfx/Write_answer.mp3"
+			})
+			soundsArray.push({
+				id: "Wrong_Answer",
+				src: "Sfx/Wrong_Answer.mp3"
+			})
+			createjs.Sound.registerSounds(soundsArray, "");
+			function move(f = 0) {
+				setTimeout(() => {
+					this.gotoAndStop(f);
+				}, 200)
+			}
+			// control buttons press handling
+			var btnPressedCounter = 0
+				function pressControl(prssedBtn = null) {
+					prssedBtn.removeAllEventListeners();
+					btnPressedCounter++;
+					console.log('btnPressedCounter', btnPressedCounter)
+					if (btnPressedCounter == 2) {
+						PlaySfx("Write_answer")							
+						setTimeout(() => {
+						this.gotoAndStop(this.currentFrame + 1)}, 1000)
+					}
+				}
+				function pressedWrongBtn(prssedBtn = null) {
+					PlaySfx("Wrong_Answer")							
+					console.log('wrong', prssedBtn)
+				}
+			// XCV buttons press handling
+var XCVString = ""
+	function pressXCV(prssedBtn = null) {
+		//prssedBtn.removeAllEventListeners();
+		let charPressed = prssedBtn.name.split("_")[0]
+		XCVString += charPressed
+		console.log('XCVString', XCVString)
+		if (XCVString.length == 3) {			
+			if (XCVString === "xcv") {
+				PlaySfx("Write_answer")							
+				setTimeout(() => {
+				this.gotoAndStop(this.currentFrame + 1)}, 1000)
+			} else {
+				console.log('wrong')
+				PlaySfx("Wrong_Answer")
+			}
+		XCVString = ""
+		}
+	}
+// copy and paste buttons press handling
+var controlPressed = false
+	function copyPasteHandle(prssedBtn = null, textElement = null) {
+		//prssedBtn.removeAllEventListeners();
+		let btnPressed = prssedBtn.name.split("_")[0]		
+		console.log('ctrl', btnPressed)
+		if(btnPressed === 'ctrl' || btnPressed === "cmd"){
+			console.log('ctrl pressed', btnPressed)
+			controlPressed = true			
+		} else {
+			if(controlPressed){
+				PlaySfx("Write_answer")
+				if(textElement){
+					textElement.visible = !textElement.visible
+					}				
+				setTimeout(() => {
+				this.gotoAndStop(this.currentFrame + 1)}, 1000)
+				} else {
+					PlaySfx("Wrong_Answer")
+				}			
+			}
+	}</script>
+<script>
+var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+function init() {
+	canvas = document.getElementById("canvas");
+	anim_container = document.getElementById("animation_container");
+	dom_overlay_container = document.getElementById("dom_overlay_container");
+	var comp=AdobeAn.getComposition("6C29459ACC3F084D92884F5B110FD514");
+	var lib=comp.getLibrary();
+	var loader = new createjs.LoadQueue(false);
+	loader.addEventListener("fileload", function(evt){handleFileLoad(evt,comp)});
+	loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
+	var lib=comp.getLibrary();
+	loader.loadManifest(lib.properties.manifest);
+}
+function handleFileLoad(evt, comp) {
+	var images=comp.getImages();	
+	if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }	
+}
+function handleComplete(evt,comp) {
+	//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
+	var lib=comp.getLibrary();
+	var ss=comp.getSpriteSheet();
+	var queue = evt.target;
+	var ssMetadata = lib.ssMetadata;
+	for(i=0; i<ssMetadata.length; i++) {
+		ss[ssMetadata[i].name] = new createjs.SpriteSheet( {"images": [queue.getResult(ssMetadata[i].name)], "frames": ssMetadata[i].frames} )
+	}
+	var preloaderDiv = document.getElementById("_preload_div_");
+	preloaderDiv.style.display = 'none';
+	canvas.style.display = 'block';
+	exportRoot = new lib.index();
+	stage = new lib.Stage(canvas);
+	stage.enableMouseOver();	
+	//Registers the "tick" event listener.
+	fnStartAnimation = function() {
+		stage.addChild(exportRoot);
+		createjs.Ticker.framerate = lib.properties.fps;
+		createjs.Ticker.addEventListener("tick", stage);
+	}	    
+	//Code to support hidpi screens and responsive scaling.
+	AdobeAn.makeResponsive(true,'both',true,1,[canvas,preloaderDiv,anim_container,dom_overlay_container]);	
+	AdobeAn.compositionLoaded(lib.properties.id);
+	fnStartAnimation();
+}
+</script>
+<!-- write your code here -->
+</head>
+<body onload="init();" style="margin:0px;">
+	<div id="animation_container" style="background-color:rgba(0, 255, 0, 1.00); width:1024px; height:576px">
+		<canvas id="canvas" width="1024" height="576" style="position: absolute; display: none; background-color:rgba(0, 255, 0, 1.00);"></canvas>
+		<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; width:1024px; height:576px; position: absolute; left: 0px; top: 0px; display: none;">
+		</div>
+	</div>
+    <div id='_preload_div_' style='position:absolute; top:0; left:0; display: inline-block; height:576px; width: 1024px; text-align: center;'>	<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>	<img src=images/_preloader.gif?1726733287231 style='vertical-align: middle; max-height: 100%'/></div>
+</body>
+</html>
