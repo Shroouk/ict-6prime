@@ -21,8 +21,8 @@
 	top:0;bottom:0;
   }
 </style>
-<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
-<script src="index.js?1726733287230"></script>
+<script src="libs/1.0.0/createjs.min.js"></script>
+<script src="index.js?1727173397426"></script>
 <script>
 // Global Scripts
 	var textElements = []
@@ -30,6 +30,7 @@ var changeSound = true
 var currentSound = ""
 var soundsArray = []
 var soundOn = true;
+var connection = null;
 var enLang = true;
 createjs.Sound.alternateExtensions = ["mp3"];
 createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.HTMLAudioPlugin]);
@@ -143,42 +144,63 @@ for (var i = 1; i <= 40; i++) {
 			}
 			// control buttons press handling
 			var btnPressedCounter = 0
-				function pressControl(prssedBtn = null) {
+				function pressControl(prssedBtn = null,robot=null) {
 					prssedBtn.removeAllEventListeners();
 					btnPressedCounter++;
 					console.log('btnPressedCounter', btnPressedCounter)
 					if (btnPressedCounter == 2) {
-						PlaySfx("Write_answer")							
+						PlaySfx("Write_answer")	
+						if(robot){
+							robot.visible=true;
+							robot.gotoAndStop("right")
+						this.animation_mc.visible=false;
+							}
 						setTimeout(() => {
-						this.gotoAndStop(this.currentFrame + 1)}, 1000)
+						//this.gotoAndStop(this.currentFrame + 1)
+							}, 1000)
 					}
 				}
-				function pressedWrongBtn(prssedBtn = null) {
+				function pressedWrongBtn(prssedBtn = null,robot=null) {
 					PlaySfx("Wrong_Answer")							
 					console.log('wrong', prssedBtn)
+						if(robot){
+							robot.visible=true;
+					this.animation_mc.visible=false;
+					robot.gotoAndStop("wrong")
+							}
 				}
 			// XCV buttons press handling
 var XCVString = ""
-	function pressXCV(prssedBtn = null) {
+	function pressXCV(prssedBtn = null, robot=null) {
 		//prssedBtn.removeAllEventListeners();
 		let charPressed = prssedBtn.name.split("_")[0]
 		XCVString += charPressed
 		console.log('XCVString', XCVString)
 		if (XCVString.length == 3) {			
 			if (XCVString === "xcv") {
-				PlaySfx("Write_answer")							
-				setTimeout(() => {
-				this.gotoAndStop(this.currentFrame + 1)}, 1000)
+				PlaySfx("Write_answer")		
+					if(robot){
+							robot.visible=true;
+							robot.gotoAndStop("right")
+						this.animation_mc.visible=false;
+							}				
+				//setTimeout(() => {
+				//this.gotoAndStop(this.currentFrame + 1)}, 1000)
 			} else {
 				console.log('wrong')
 				PlaySfx("Wrong_Answer")
+				if(robot){
+							robot.visible=true;
+					this.animation_mc.visible=false;
+					robot.gotoAndStop("wrong")
+							}
 			}
 		XCVString = ""
 		}
 	}
 // copy and paste buttons press handling
 var controlPressed = false
-	function copyPasteHandle(prssedBtn = null, textElement = null) {
+	function copyPasteHandle(prssedBtn = null, textElement = null,robot=null, animation=null) {
 		//prssedBtn.removeAllEventListeners();
 		let btnPressed = prssedBtn.name.split("_")[0]		
 		console.log('ctrl', btnPressed)
@@ -188,13 +210,26 @@ var controlPressed = false
 		} else {
 			if(controlPressed){
 				PlaySfx("Write_answer")
+					console.log('this.animation_mc', this.animation_mc)
+					if(robot){
+							robot.visible=true;
+							robot.gotoAndStop("right")
+							//robot.right.gotoAndPlay(1)
+						animation.visible=false;
+							}		
 				if(textElement){
-					textElement.visible = !textElement.visible
-					}				
-				setTimeout(() => {
-				this.gotoAndStop(this.currentFrame + 1)}, 1000)
+					textElement.visible = !textElement.visible;
+						connection.graphics.clear()
+					}
+			/*	setTimeout(() => {
+				this.gotoAndStop(this.currentFrame + 1)}, 1000)*/
 				} else {
 					PlaySfx("Wrong_Answer")
+					if(robot){
+							robot.visible=true;
+					animation.visible=false;
+					robot.gotoAndStop("wrong")
+							}
 				}			
 			}
 	}</script>
@@ -246,11 +281,11 @@ function handleComplete(evt,comp) {
 <!-- write your code here -->
 </head>
 <body onload="init();" style="margin:0px;">
-	<div id="animation_container" style="background-color:rgba(0, 255, 0, 1.00); width:1024px; height:576px">
-		<canvas id="canvas" width="1024" height="576" style="position: absolute; display: none; background-color:rgba(0, 255, 0, 1.00);"></canvas>
+	<div id="animation_container" style="background-color:rgba(255, 255, 255, 1.00); width:1024px; height:576px">
+		<canvas id="canvas" width="1024" height="576" style="position: absolute; display: none; background-color:rgba(255, 255, 255, 1.00);"></canvas>
 		<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; width:1024px; height:576px; position: absolute; left: 0px; top: 0px; display: none;">
 		</div>
 	</div>
-    <div id='_preload_div_' style='position:absolute; top:0; left:0; display: inline-block; height:576px; width: 1024px; text-align: center;'>	<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>	<img src=images/_preloader.gif?1726733287231 style='vertical-align: middle; max-height: 100%'/></div>
+    <div id='_preload_div_' style='position:absolute; top:0; left:0; display: inline-block; height:576px; width: 1024px; text-align: center;'>	<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>	<img src=images/_preloader.gif?1727173397427 style='vertical-align: middle; max-height: 100%'/></div>
 </body>
 </html>
